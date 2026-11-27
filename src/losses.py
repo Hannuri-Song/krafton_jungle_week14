@@ -49,9 +49,10 @@ class SoftmaxWithLoss:
 
         검증: 모든 logits가 0이면 확률이 모두 1/10이므로 손실은 ln(10) = 2.3026 이 됩니다.
         """
-        # TODO: 위 1~4 순서대로 구현하세요.
+
         z = logits - np.max(logits, axis = 1, keepdims=True)
-        
+
+        # softmax 함수
         exp_z = np.exp(z)
         sum_exp_z = np.sum(exp_z, axis = 1, keepdims=True)
         z_prob = exp_z / sum_exp_z
@@ -59,6 +60,7 @@ class SoftmaxWithLoss:
         self.y_prob = z_prob
         self.y_true = y_true
 
+        # cross entropy 손실 함?수
         out = np.mean(-np.log(np.clip(z_prob[np.arange(logits.shape[0]), y_true], 1e-7, 1.0)))
 
         return out
