@@ -50,7 +50,14 @@ class SoftmaxWithLoss:
         검증: 모든 logits가 0이면 확률이 모두 1/10이므로 손실은 ln(10) = 2.3026 이 됩니다.
         """
         # TODO: 위 1~4 순서대로 구현하세요.
-        raise NotImplementedError("SoftmaxWithLoss.forward를 구현하세요.")
+        shifted_logits = logits - np.max(logits, axis=1, keepdims=True)
+        exp_logits = np.exp(shifted_logits)
+        y_prob = exp_logits / exp_logits.sum(axis=1, keepdims=True)
+        self.y_prob = y_prob
+        self.y_true = y_true
+        correct_probs = y_prob[np.arange(y_true.shape[0]), y_true]
+        correct_probs = np.clip(correct_probs, 1e-7, 1.0)
+        return (-np.log(correct_probs)).mean()
 
     def backward(self):
         """
